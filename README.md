@@ -28,12 +28,14 @@ IA component for Babel Revolution
 
 Download Docker [here](https://www.docker.com/products/docker-desktop)
 
-This project is part of a bigger project, Babel Revolution. You can find the main project [here](https://github.com/KoroSensei10/svelte-revolution). You are more likely to run this project with the main project with the following instructions :
+This project is part of a bigger project, Babel Revolution. You can find the main project [here](https://github.com/KoroSensei10/svelte-revolution). You are more likely to run this project with the main project with the following instruction :
 
-### Run the main project
+### Run with the main project
 ```bash
 docker compose up
 ```
+
+## Run this project only
 
 ### Build the image
 ```bash
