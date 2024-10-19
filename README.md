@@ -23,3 +23,29 @@ IA component for Babel Revolution
 | Property    | Type    | Example    |
 |-------------|---------|------------|
 |`is_censored`| `bool`  | `true`     |
+
+## How to run with Docker
+
+Download Docker [here](https://www.docker.com/products/docker-desktop)
+
+This project is part of a bigger project, Babel Revolution. You can find the main project [here](https://github.com/KoroSensei10/svelte-revolution). You are more likely to run this project with the main project with the following instructions :
+
+### Run the main project
+```bash
+docker compose up
+```
+
+### Build the image
+```bash
+docker build -t babel-revolution-ia .
+```
+
+### Run the container
+```bash
+docker run -p 8000:8000 babel-revolution-ia
+```
+
+### Test the API
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"message":"Prends l'objet pour se protéger de la pluie"}' http://localhost:8000/is_censored
+```

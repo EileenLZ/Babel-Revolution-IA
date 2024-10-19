@@ -6,8 +6,10 @@ import (
 	server "TestNLP/webservice"
 )
 
+var port = ":8000"
+
 func main() {
-	server := server.NewServerAgent(":8080")
+	server := server.NewServerAgent(port)
 	server.Start()
 	fmt.Scanln()
 }
