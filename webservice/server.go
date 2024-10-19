@@ -18,7 +18,10 @@ type ServerAgent struct {
 }
 
 func NewServerAgent(addr string) *ServerAgent {
-	return &ServerAgent{id: addr, addr: addr}
+	return &ServerAgent{id: addr, addr: addr, bannedWords: []string{
+		"clavier", "parapluie", "flaque", "écran",
+		"machine", "IA", "SOPHIA", "détruire",
+	}}
 }
 
 // Test de la méthode
