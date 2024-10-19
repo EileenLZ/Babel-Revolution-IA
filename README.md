@@ -49,5 +49,5 @@ docker run -p 8000:8000 babel-revolution-ia
 
 ### Test the API
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{"message":"Prends l'objet pour se protéger de la pluie"}' http://localhost:8000/is_censored
+curl -X POST -H "Content-Type: application/json" -d '{"message":"Prends l objet pour se protéger de la pluie"}' http://localhost:8000/is_censored
 ```
