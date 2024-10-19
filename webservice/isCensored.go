@@ -31,7 +31,7 @@ func (rsa *ServerAgent) DoIsCensored(w http.ResponseWriter, r *http.Request) {
 	resp.IsCensored, err = censorship.IsSentenceCensored(req.Message, rsa.bannedWords)
 
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		msg := fmt.Sprintf("An error occured : '%s'.", err.Error())
 		w.Write([]byte(msg))
 		return
