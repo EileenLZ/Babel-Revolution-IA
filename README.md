@@ -1,18 +1,6 @@
 # Babel-Revolution-IA
 IA component for Babel Revolution
 
-## Usage 
-
-### Launch server
-```shell
-go run .\cmd\lauchServer\launchServer.go
-```
-
-### Without server
-```shell
-go run .\cmd\simpleRun\simpleRun.go
-```
-
 ## API
 ### Request for censorship `/is_censored`
 
