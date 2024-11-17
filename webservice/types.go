@@ -1,5 +1,7 @@
 package webservice
 
+import "TestNLP/pkg/censorship"
+
 type MessageRequest struct {
 	Message string `json:"text"`
 	Title   string `json:"title"`
@@ -10,5 +12,23 @@ type MessageRequest struct {
 }
 
 type Request interface {
-	MessageRequest
+	MessageRequest | NewSessionRequest
+}
+
+type NewSessionRequest struct {
+	Session     string   `json:"session"`
+	BannedWords []string `json:"bannedWords"`
+}
+
+type NewSessionResponse struct {
+	Session string `json:"session"`
+}
+
+type Session struct {
+	censorship censorship.Censorship
+	id         string
+}
+
+func NewSession(id string, banned_words []string) *Session {
+	return &Session{*censorship.NewCensorship(banned_words), id}
 }

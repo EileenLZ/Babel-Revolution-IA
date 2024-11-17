@@ -12,16 +12,13 @@ import (
 
 type ServerAgent struct {
 	sync.Mutex
-	id          string
-	addr        string
-	bannedWords []string
+	id       string
+	addr     string
+	Sessions map[string]Session
 }
 
 func NewServerAgent(addr string) *ServerAgent {
-	return &ServerAgent{id: addr, addr: addr, bannedWords: []string{
-		"clavier", "parapluie", "flaque", "écran",
-		"machine", "IA", "SOPHIA", "détruire",
-	}}
+	return &ServerAgent{sync.Mutex{}, addr, addr, map[string]Session{}}
 }
 
 // Test de la méthode
@@ -46,6 +43,7 @@ func (rsa *ServerAgent) Start() {
 	// création du multiplexer
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /api/CheckMsg", rsa.DoIsCensored)
+	mux.HandleFunc("POST /api/NewSession", rsa.DoNewSession)
 
 	// création du serveur http
 	s := &http.Server{

@@ -12,7 +12,17 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-func censureSynonymes(word string) {
+type Censorship struct {
+	wiktionnaire wiktionnaire.Wiktionnaire
+	bannedWords  []string
+	Corpus       []string
+}
+
+func NewCensorship(banned_words []string) *Censorship {
+	return &Censorship{*wiktionnaire.NewWiktionnaire(), banned_words, []string{}}
+}
+
+func (c *Censorship) censureSynonymes(word string) {
 	resource, err := omwfr.LoadOMWFR("omw-fr.xml")
 	fmt.Print(resource.Lexicon.LexicalEntries[4])
 	if err != nil {
@@ -29,8 +39,8 @@ func censureSynonymes(word string) {
 	}
 }
 
-func getDefinition(word string) []string {
-	definitions, err := wiktionnaire.GetDefinitions(word)
+func (c *Censorship) getDefinition(word string) []string {
+	definitions, err := c.wiktionnaire.GetDefinitions(word)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
@@ -38,17 +48,17 @@ func getDefinition(word string) []string {
 	return definitions
 }
 
-func getAllDefinitions(bannedWords []string) []string {
+func (c *Censorship) getAllDefinitions() []string {
 	var definitions []string
-	for _, w := range bannedWords {
-		definitions = append(definitions, getDefinition(w)...)
+	for _, w := range c.bannedWords {
+		definitions = append(definitions, c.getDefinition(w)...)
 	}
 
 	return definitions
 }
 
-func IsSentenceCensored(query string, bannedWords []string) (bool, error) {
-	testCorpus := getAllDefinitions(bannedWords)
+func (c *Censorship) IsSentenceCensored(query string) (bool, error) {
+	testCorpus := c.getAllDefinitions()
 
 	vectoriser := nlp.NewCountVectoriser(libs.StopWords...)
 	transformer := nlp.NewTfidfTransformer()

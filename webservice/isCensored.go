@@ -1,7 +1,6 @@
 package webservice
 
 import (
-	"TestNLP/pkg/censorship"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -25,11 +24,26 @@ func (rsa *ServerAgent) DoIsCensored(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//récupration de la session
+	session, ok := rsa.Sessions[req.Session]
+
+	if !ok {
+		w.WriteHeader(http.StatusConflict)
+		msg := "This session doesn't exists. Please create a session first"
+		w.Write([]byte(msg))
+		return
+	}
+
+	censor := session.censorship
+
+	//ajout du message au corpus
+	censor.Corpus = append(censor.Corpus, req.Message)
+
 	// traitement de la requête
 	var resp MessageRequest = req
 
-	is_message_censored, err := censorship.IsSentenceCensored(req.Message, rsa.bannedWords)
-	is_title_censored, err1 := censorship.IsSentenceCensored(req.Title, rsa.bannedWords)
+	is_message_censored, err := censor.IsSentenceCensored(req.Message)
+	is_title_censored, err1 := censor.IsSentenceCensored(req.Title)
 
 	if is_message_censored || is_title_censored {
 		resp.Author = "SOPHIA"
