@@ -2,7 +2,7 @@
 IA component for Babel Revolution
 
 ## API
-### Request for censorship `/is_censored`
+### Request for censorship `api/CheckMsg`
 
 #### Resquest description
 - `POST`
@@ -10,19 +10,46 @@ IA component for Babel Revolution
 
 | Property  | Type        | Example                                                                     |
 |-----------|-------------|-----------------------------------------------------------------------------|
-| `message` | `string`    | `"J'aime la compote."`,`"Prends l'objet pour se protéger de la pluie"`, ... |
+| `title`   | `string`    | `"Instructions"`, ...                                                       |
+| `text`    | `string`    | `"J'aime la compote."`,`"Prends l'objet pour se protéger de la pluie"`, ... |
+| `author`  | `string`    | `"Mike"`, `"Corinne"`, ...                                                  |
+| `parent`  | `string`    | see svelt-revolution specs                                                  |
+| `session` | `string`    | see svelt-revolution specs                                                  |
+| `side`    | `string`    | `"Pour"`,`"QG"`, ...                                                        |
 
 #### Response description
 | HTTP Code   | Meaning                                           |
 |-------------|---------------------------------------------------|
 | `201`       | message analyzed successfully                     |
 | `400`       | bad request                                       |
+| `409`       | the session doesn't exists                        |
 | `500` 	  | internal error while accessing external resources |
 
 ##### `JSON` object sent (if `201`)
-| Property    | Type    | Example    |
-|-------------|---------|------------|
-|`is_censored`| `bool`  | `true`     |
+Same as request.
+
+### Request for new session `api/NewSession`
+
+#### Resquest description
+- `POST`
+- `JSON` object
+
+| Property     | Type        | Example                                                                                 |
+|--------------|-------------|-----------------------------------------------------------------------------------------|
+| `session`    | `string`    | see svelt-revolution specs                                                              |
+| `bannedWords`| `[]string`  | `"clavier", "parapluie", "flaque", "écran", "machine", "IA", "SOPHIA", "détruire"`, ... |
+
+#### Response description
+| HTTP Code   | Meaning                                           |
+|-------------|---------------------------------------------------|
+| `201`       | session created successfully                      |
+| `400`       | bad request                                       |
+| `409`       | the session already exists                        |
+
+##### `JSON` object sent (if `201`)
+| Property     | Type        | Example                                                                                 |
+|--------------|-------------|-----------------------------------------------------------------------------------------|
+| `session`    | `string`    | see svelt-revolution specs                                                              |
 
 ## How to run with Docker
 
