@@ -28,15 +28,16 @@ func (rsa *ServerAgent) DoIsCensored(w http.ResponseWriter, r *http.Request) {
 	// traitement de la requête
 	var resp MessageRequest = req
 
-	is_censored, err := censorship.IsSentenceCensored(req.Message, rsa.bannedWords)
+	is_message_censored, err := censorship.IsSentenceCensored(req.Message, rsa.bannedWords)
+	is_title_censored, err1 := censorship.IsSentenceCensored(req.Title, rsa.bannedWords)
 
-	if is_censored {
+	if is_message_censored || is_title_censored {
 		resp.Author = "SOPHIA"
 		resp.Title = "[Censuré]"
 		resp.Message = "L'utilisateur.ice qui a posté ce message est contrevenu.e aux textes de loi en vigueur sur la pacification des moyens de communication."
 	}
 
-	if err != nil {
+	if err != nil || err1 != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		msg := fmt.Sprintf("An error occured : '%s'.", err.Error())
 		w.Write([]byte(msg))
