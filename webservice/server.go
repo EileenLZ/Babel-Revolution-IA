@@ -45,7 +45,7 @@ func decodeRequest[Req Request](r *http.Request) (req Req, err error) {
 func (rsa *ServerAgent) Start() {
 	// création du multiplexer
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /is_censored", rsa.DoIsCensored)
+	mux.HandleFunc("POST /api/CheckMsg", rsa.DoIsCensored)
 
 	// création du serveur http
 	s := &http.Server{
