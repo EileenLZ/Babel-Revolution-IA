@@ -1,4 +1,4 @@
-package omwfr
+package pkg
 
 import (
 	"encoding/xml"
@@ -35,4 +35,9 @@ type Lexicon struct {
 	Label          string         `xml:"label,attr"`
 	Lang           string         `xml:"language,attr"`
 	LexicalEntries []LexicalEntry `xml:"LexicalEntry"`
+}
+
+type Keyword struct {
+	Word  string
+	Score float64
 }

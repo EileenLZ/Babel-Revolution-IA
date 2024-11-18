@@ -1,13 +1,28 @@
 package omwfr
 
 import (
+	"TestNLP/pkg"
+	"TestNLP/pkg/libs"
 	"encoding/xml"
 	"fmt"
 	"os"
 )
 
-func LoadOMWFR(filename string) (LexicalResource, error) {
-	var resource LexicalResource
+type OMWfr struct {
+	synonyms map[string][]string
+	resource pkg.LexicalResource
+}
+
+func NewOMWfr() *OMWfr {
+	resource, err := LoadOMWFR(libs.OmwfrFilePath)
+	if err != nil {
+		fmt.Printf("Chargement de la base de donnée de synonymes impossible : %s", err)
+	}
+	return &OMWfr{make(map[string][]string), resource}
+}
+
+func LoadOMWFR(filename string) (pkg.LexicalResource, error) {
+	var resource pkg.LexicalResource
 	file, err := os.Open(filename)
 	if err != nil {
 		return resource, err
@@ -24,34 +39,39 @@ func LoadOMWFR(filename string) (LexicalResource, error) {
 }
 
 // findSynonyms searches for synonyms for a given word in the LexicalResource data
-func FindSynonyms(resource LexicalResource, target string) []string {
-	synonyms := make(map[string]bool) // Use a map to avoid duplicates
+func (o *OMWfr) FindSynonyms(target string) []string {
+	syns, found := o.synonyms[target]
 
-	// Search each lexical entry for the target word
-	for _, entry := range resource.Lexicon.LexicalEntries {
-		if entry.Lemma.WrittenForm == target {
-			fmt.Print("trouvé")
-			// If the target word is found, add all other words in the same synsets as synonyms
-			for _, sense := range entry.Senses {
-				fmt.Print(sense.Synset)
-				for _, otherEntry := range resource.Lexicon.LexicalEntries {
-					for _, otherSense := range otherEntry.Senses {
+	if !found {
+		synonyms := make(map[string]bool) // Use a map to avoid duplicates
 
-						if otherSense.Synset == sense.Synset && otherEntry.Lemma.WrittenForm != target {
+		// Search each lexical entry for the target word
+		for _, entry := range o.resource.Lexicon.LexicalEntries {
+			if entry.Lemma.WrittenForm == target {
+				// If the target word is found, add all other words in the same synsets as synonyms
+				for _, sense := range entry.Senses {
+					for _, otherEntry := range o.resource.Lexicon.LexicalEntries {
+						for _, otherSense := range otherEntry.Senses {
 
-							synonyms[otherEntry.Lemma.WrittenForm] = true
+							if otherSense.Synset == sense.Synset && otherEntry.Lemma.WrittenForm != target {
+
+								synonyms[otherEntry.Lemma.WrittenForm] = true
+							}
 						}
 					}
 				}
 			}
 		}
+
+		// Convert map keys to a slice for returning
+		result := make([]string, 0, len(synonyms))
+		for synonym := range synonyms {
+			result = append(result, synonym)
+
+		}
+		return result
+	} else {
+		return syns
 	}
 
-	// Convert map keys to a slice for returning
-	result := make([]string, 0, len(synonyms))
-	for synonym := range synonyms {
-		result = append(result, synonym)
-
-	}
-	return result
 }

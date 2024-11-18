@@ -42,13 +42,12 @@ func (rsa *ServerAgent) DoIsCensored(w http.ResponseWriter, r *http.Request) {
 	// traitement de la requête
 	var resp MessageRequest = req
 
-	is_message_censored, err := censor.IsSentenceCensored(req.Message)
-	is_title_censored, err1 := censor.IsSentenceCensored(req.Title)
+	is_message_censored, censored_message, err := censor.IsSentenceCensored(req.Message)
+	is_title_censored, censored_title, err1 := censor.IsSentenceCensored(req.Title)
 
 	if is_message_censored || is_title_censored {
-		resp.Author = "SOPHIA"
-		resp.Title = "[Censuré]"
-		resp.Message = "L'utilisateur.ice qui a posté ce message est contrevenu.e aux textes de loi en vigueur sur la pacification des moyens de communication."
+		resp.Title = censored_title     //censored_title
+		resp.Message = censored_message //"L'utilisateur.ice qui a posté ce message est contrevenu.e aux textes de loi en vigueur sur la pacification des moyens de communication." //censored_message
 	}
 
 	if err != nil || err1 != nil {

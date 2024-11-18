@@ -42,8 +42,9 @@ func decodeRequest[Req Request](r *http.Request) (req Req, err error) {
 func (rsa *ServerAgent) Start() {
 	// création du multiplexer
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /api/CheckMsg", rsa.DoIsCensored)
-	mux.HandleFunc("POST /api/NewSession", rsa.DoNewSession)
+	mux.HandleFunc("POST /api/checkMsg", rsa.DoIsCensored)
+	mux.HandleFunc("POST /api/newSession", rsa.DoNewSession)
+	mux.HandleFunc("GET /api/health", rsa.Health)
 
 	// création du serveur http
 	s := &http.Server{
@@ -56,4 +57,8 @@ func (rsa *ServerAgent) Start() {
 	// lancement du serveur
 	log.Println("Listening on", rsa.addr)
 	go log.Fatal(s.ListenAndServe())
+}
+
+func (rsa *ServerAgent) Health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
