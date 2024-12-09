@@ -8,6 +8,11 @@ require (
 )
 
 require (
+	code.sajari.com/word2vec v1.0.1 // indirect
+	github.com/ziutek/blas v0.0.0-20190227122918-da4ca23e90bb // indirect
+)
+
+require (
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/james-bowman/sparse v0.0.0-20210729090128-1e6c7dd483e9 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect

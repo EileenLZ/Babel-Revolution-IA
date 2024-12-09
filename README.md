@@ -16,6 +16,11 @@ IA component for Babel Revolution
 | `parent`  | `string`    | see svelt-revolution specs                                                  |
 | `session` | `string`    | see svelt-revolution specs                                                  |
 | `side`    | `string`    | `"Pour"`,`"QG"`, ...                                                        |
+| `isCensored` | `bool`   |                                                                             |
+| `triggerNewEvent` | `bool` ||
+| `qg` | `Node`||
+| `terrain`| `Node`||
+
 
 #### Response description
 | HTTP Code   | Meaning                                           |

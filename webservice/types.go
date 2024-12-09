@@ -2,6 +2,13 @@ package webservice
 
 import "TestNLP/pkg/censorship"
 
+type Side int64
+
+const (
+	QG      Side = 0
+	Terrain Side = 1
+)
+
 type MessageRequest struct {
 	Message string `json:"text"`
 	Title   string `json:"title"`
@@ -9,6 +16,18 @@ type MessageRequest struct {
 	Parent  string `json:"parent"`
 	Session string `json:"session"`
 	Side    string `json:"side"`
+}
+
+type MessageResponse struct {
+	Message         string            `json:"text"`
+	Title           string            `json:"title"`
+	Author          string            `json:"author"`
+	Parent          string            `json:"parent"`
+	Session         string            `json:"session"`
+	Side            string            `json:"side"`
+	IsCensored      bool              `json:"isCensored"`
+	TriggerNewEvent bool              `json:"triggerNewEvent"`
+	Events          censorship.Events `json:"events"`
 }
 
 type Request interface {
@@ -22,13 +41,4 @@ type NewSessionRequest struct {
 
 type NewSessionResponse struct {
 	Session string `json:"session"`
-}
-
-type Session struct {
-	censorship censorship.Censorship
-	id         string
-}
-
-func NewSession(id string, banned_words []string) *Session {
-	return &Session{*censorship.NewCensorship(banned_words), id}
 }

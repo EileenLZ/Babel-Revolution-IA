@@ -1,6 +1,7 @@
 package webservice
 
 import (
+	"TestNLP/pkg/censorship"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -40,21 +41,37 @@ func (rsa *ServerAgent) DoIsCensored(w http.ResponseWriter, r *http.Request) {
 	censor.Corpus = append(censor.Corpus, req.Message)
 
 	// traitement de la requête
-	var resp MessageRequest = req
+	var resp MessageResponse = MessageResponse{req.Message, req.Title, req.Author, req.Parent, req.Session, req.Side, false, false, censorship.Events{}}
+	fmt.Print(req.Side)
+	if req.Side == "kgachwfxlvawkay" {
+		is_message_performative := censor.IsActionPerformed(req.Title)
 
-	is_message_censored, censored_message, err := censor.IsSentenceCensored(req.Message)
-	is_title_censored, censored_title, err1 := censor.IsSentenceCensored(req.Title)
+		if is_message_performative {
+			//déclencer evt
+			fmt.Print("triggered")
+			resp.TriggerNewEvent = true
+			resp.Events = session.Scenario.Steps[session.step].Events
+			session.NextStep()
+		}
 
-	if is_message_censored || is_title_censored {
-		resp.Title = censored_title     //censored_title
-		resp.Message = censored_message //"L'utilisateur.ice qui a posté ce message est contrevenu.e aux textes de loi en vigueur sur la pacification des moyens de communication." //censored_message
 	}
+	if !resp.TriggerNewEvent {
+		is_message_censored, censored_message, err := censor.CensordMessage(req.Message)
+		is_title_censored, censored_title, err1 := censor.CensordMessage(req.Title)
 
-	if err != nil || err1 != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		msg := fmt.Sprintf("An error occured : '%s'.", err.Error())
-		w.Write([]byte(msg))
-		return
+		if is_message_censored || is_title_censored {
+			resp.IsCensored = true
+			resp.Title = censored_title     //censored_title
+			resp.Message = censored_message //"L'utilisateur.ice qui a posté ce message est contrevenu.e aux textes de loi en vigueur sur la pacification des moyens de communication." //censored_message
+
+		}
+		if err != nil || err1 != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			msg := fmt.Sprintf("An error occured : '%s'.", err.Error())
+			w.Write([]byte(msg))
+			return
+		}
+
 	}
 
 	w.WriteHeader(http.StatusOK)

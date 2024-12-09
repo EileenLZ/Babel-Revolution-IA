@@ -1,7 +1,6 @@
 package omwfr
 
 import (
-	"TestNLP/pkg"
 	"TestNLP/pkg/libs"
 	"encoding/xml"
 	"fmt"
@@ -10,7 +9,7 @@ import (
 
 type OMWfr struct {
 	synonyms map[string][]string
-	resource pkg.LexicalResource
+	resource LexicalResource
 }
 
 func NewOMWfr() *OMWfr {
@@ -21,8 +20,8 @@ func NewOMWfr() *OMWfr {
 	return &OMWfr{make(map[string][]string), resource}
 }
 
-func LoadOMWFR(filename string) (pkg.LexicalResource, error) {
-	var resource pkg.LexicalResource
+func LoadOMWFR(filename string) (LexicalResource, error) {
+	var resource LexicalResource
 	file, err := os.Open(filename)
 	if err != nil {
 		return resource, err
@@ -38,17 +37,15 @@ func LoadOMWFR(filename string) (pkg.LexicalResource, error) {
 	return resource, nil
 }
 
-// findSynonyms searches for synonyms for a given word in the LexicalResource data
 func (o *OMWfr) FindSynonyms(target string) []string {
 	syns, found := o.synonyms[target]
 
 	if !found {
-		synonyms := make(map[string]bool) // Use a map to avoid duplicates
+		synonyms := make(map[string]bool)
 
-		// Search each lexical entry for the target word
 		for _, entry := range o.resource.Lexicon.LexicalEntries {
 			if entry.Lemma.WrittenForm == target {
-				// If the target word is found, add all other words in the same synsets as synonyms
+
 				for _, sense := range entry.Senses {
 					for _, otherEntry := range o.resource.Lexicon.LexicalEntries {
 						for _, otherSense := range otherEntry.Senses {
@@ -63,7 +60,6 @@ func (o *OMWfr) FindSynonyms(target string) []string {
 			}
 		}
 
-		// Convert map keys to a slice for returning
 		result := make([]string, 0, len(synonyms))
 		for synonym := range synonyms {
 			result = append(result, synonym)

@@ -50,7 +50,10 @@ func (w *Wiktionnaire) FindDefinitions(word string, n *html.Node) []string {
 			}
 
 			//ajoute la def
-			definitions = append(definitions, olContent.String())
+			if olContent.String() != "" {
+				definitions = append(definitions, olContent.String())
+
+			}
 		}
 
 		// Traverse le reste de l'arborescence
@@ -72,7 +75,6 @@ func (w *Wiktionnaire) fetchHTML(word string) (*html.Node, error) {
 	}
 	defer resp.Body.Close()
 
-	// Parse HTML document
 	doc, err := html.Parse(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse HTML: %v", err)

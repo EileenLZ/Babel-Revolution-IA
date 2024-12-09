@@ -33,7 +33,14 @@ func (rsa *ServerAgent) DoNewSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rsa.Sessions[req.Session] = *NewSession(req.Session, req.BannedWords)
+	new_session, err := NewSession(req.Session, scenarioFile)
+	rsa.Sessions[req.Session] = *new_session
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, err.Error())
+		return
+	}
 
 	var resp NewSessionResponse
 	resp.Session = req.Session
