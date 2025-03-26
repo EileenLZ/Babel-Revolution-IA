@@ -94,3 +94,7 @@ docker run -p 8000:8000 babel-revolution-ia
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"message":"Prends l objet pour se protéger de la pluie"}' http://localhost:8000/is_censored
 ```
+
+# Word2Vec
+Word2Vec is an opensource package for querrying word2vec models. This package has been specified for Babel Revolution usage, this is why it is distributed here. Please check the original repository.
+[Source|https://github.com/sajari/word2vec]
